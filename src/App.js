@@ -1,26 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import {DataSearch, ReactiveBase, ReactiveList, ResultList, SelectedFilters} from '@appbaseio/reactivesearch';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const { ResultListWrapper } = ReactiveList;
+
+class App extends Component {
+    render() {
+        return (
+            <div className="main-container">
+                <ReactiveBase
+                    app="steam-search"
+                    url="http://localhost:9200"
+                    credentials="elastic:changeme"
+                >
+                    <DataSearch
+                        componentId="title"
+                        dataField={["ResponseName"]}
+                        queryFormat="and"
+                    />
+                    <SelectedFilters/>
+                    <ReactiveList
+                        componentId="resultLists"
+                        dataField="ResponseName"
+                        size={10}
+                        pagination={true}
+                        react={{
+                            "and": ["title"]
+                        }}
+                    >
+                        {({data}) => (
+                            <ResultListWrapper>
+                                {
+                                    data.map(item => (
+                                        <ResultList key={item._id}>
+                                            <ResultList.Content>
+                                                <ResultList.Title
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: item.ResponseName
+                                                    }}
+                                                />
+                                            </ResultList.Content>
+                                        </ResultList>
+                                    ))
+                                }
+                            </ResultListWrapper>
+                        )}
+                    </ReactiveList>
+                </ReactiveBase>
+            </div>
+        );
+    }
 }
 
 export default App;
