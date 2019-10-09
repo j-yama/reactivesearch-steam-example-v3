@@ -27,6 +27,11 @@ class App extends Component {
                         react={{
                             "and": ["title"]
                         }}
+                        sortOptions={[
+                            {label: "Best Match", dataField: "_score", sortBy: "desc"},
+                            {label: "Lowest Price", dataField: "PriceInitial", sortBy: "asc"},
+                            {label: "Highest Price", dataField: "PriceInitial", sortBy: "desc"},
+                        ]}
                     >
                         {({data}) => (
                             <ResultListWrapper>
